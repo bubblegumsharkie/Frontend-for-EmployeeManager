@@ -11,6 +11,7 @@ import { EmployeeService } from './employee.service';
 })
 export class AppComponent implements OnInit {
   public employees: Employee[] = []; //possibly an error?
+  public editEmployee!: Employee | null;
   
   constructor(private employeeService: EmployeeService) { }
   ngOnInit(): void {
@@ -41,6 +42,18 @@ export class AppComponent implements OnInit {
     );
   }
 
+  public onUpdateEmployee(employee: Employee): void {
+    this.employeeService.updateEmployee(employee).subscribe(
+      (responce: Employee) => {
+        console.log(responce);
+        this.getEmployees();
+      },
+      (error: HttpErrorResponse) => {
+        alert(error.message);
+      }
+    );
+  }
+
   public onOpenModal(employee: Employee | null, mode: string): void {
     const container = document.getElementById('main-container')
     const button = document.createElement('button');
@@ -51,6 +64,7 @@ export class AppComponent implements OnInit {
       button.setAttribute('data-toggle', 'addEmployeeModal');
     }
     if (mode === 'edit') {
+      this.editEmployee = employee;
       button.setAttribute('data-toggle', 'updateEmployeeModal');
       
     }
